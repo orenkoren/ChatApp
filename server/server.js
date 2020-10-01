@@ -6,10 +6,10 @@ app.get('/', (req, res) => res.send('hello!'));
 
 io.on('connection', (socket) => {
     console.log('a user connected');
-    socket.on('messsage'), (msg) => {
+    socket.on('message', (msg) => {
         console.log(msg);
-        socket.broadcast.emit('message-broadcaast', msg);
-    }
+        socket.broadcast.emit('message-broadcast', msg);
+    });
 });
 
 http.listen(3000, () => {
