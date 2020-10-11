@@ -15,7 +15,8 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {}
 
   submit(): void {
-    if (this.authService.login()) {
+    this.authService.login();
+    if (this.authService.isUserLoggedIn()) {
       this.router.navigate(['/chat']);
     } else {
       this.router.navigate(['']);

@@ -2,18 +2,13 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class AuthService {
-  private isloggedIn: boolean;
+  constructor() {}
 
-  constructor() {
-    this.isloggedIn = false;
-  }
-
-  public login(): boolean {
-    this.isloggedIn = true;
-    return this.isloggedIn;
+  public login(): void {
+    sessionStorage.setItem('isLoggedIn', 'true');
   }
 
   isUserLoggedIn(): boolean {
-    return this.isloggedIn;
+    return sessionStorage.getItem('isLoggedIn') === 'true';
   }
 }
