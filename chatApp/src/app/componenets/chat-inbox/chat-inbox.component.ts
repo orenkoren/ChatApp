@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as io from 'socket.io-client';
 
-const SOCKET_ENDPOINT = 'localhost:3000'
+const SOCKET_ENDPOINT = 'localhost:3000';
 @Component({
   selector: 'app-chat-inbox',
   templateUrl: './chat-inbox.component.html',
@@ -16,7 +16,7 @@ export class ChatInboxComponent implements OnInit {
     this.setupSocketConnection();
   }
 
-  setupSocketConnection() {
+  setupSocketConnection(): void {
     this.socket = io(SOCKET_ENDPOINT);
     this.socket.on('message-broadcast', (data: string) => {
       if (data) {
@@ -30,8 +30,8 @@ export class ChatInboxComponent implements OnInit {
     });
   }
 
-  SendMessage() {
-    console.log("emitting message", this.message);
+  SendMessage(): void {
+    console.log('emitting message', this.message);
     this.socket.emit('message', this.message);
     const element = document.createElement('li');
     element.innerHTML = this.message;
