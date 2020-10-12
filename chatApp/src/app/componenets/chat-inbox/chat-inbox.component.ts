@@ -1,38 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import * as io from 'socket.io-client';
+import { SocketService } from 'src/app/services/socket.service';
 
 const SOCKET_ENDPOINT = 'localhost:3000';
 @Component({
   selector: 'app-chat-inbox',
   templateUrl: './chat-inbox.component.html',
-  styleUrls: ['./chat-inbox.component.css']
+  styleUrls: ['./chat-inbox.component.css'],
 })
-export class ChatInboxComponent implements OnInit {
+export class ChatInboxComponent {
   socket: any;
   message: any;
-  constructor() { }
-
-  ngOnInit(): void {
-    this.setupSocketConnection();
-  }
-
-  setupSocketConnection(): void {
-    this.socket = io(SOCKET_ENDPOINT);
-    this.socket.on('message-broadcast', (data: string) => {
-      if (data) {
-        const element = document.createElement('li');
-        element.innerHTML = data;
-        element.style.background = 'gray';
-        element.style.padding = '15px 30px';
-        element.style.margin = '10px';
-        document.getElementById('message-list').appendChild(element);
-      }
-    });
+  constructor(private socketServie: SocketService) {
+    socketServie
+      .onMessageReceive()
+      .subscribe((message) => this.OnReceiveMessage(message));
   }
 
   SendMessage(): void {
-    console.log('emitting message', this.message);
-    this.socket.emit('message', this.message);
+    this.socketServie.emitMessage(this.message);
     const element = document.createElement('li');
     element.innerHTML = this.message;
     element.style.background = 'gray';
@@ -43,4 +29,12 @@ export class ChatInboxComponent implements OnInit {
     this.message = '';
   }
 
+  OnReceiveMessage(message): void {
+    const element = document.createElement('li');
+    element.innerHTML = message;
+    element.style.background = 'gray';
+    element.style.padding = '15px 30px';
+    element.style.margin = '10px';
+    document.getElementById('message-list').appendChild(element);
+  }
 }
