@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, Subscriber } from 'rxjs';
 import * as io from 'socket.io-client';
+import { Message } from '../models/message';
 
 const SOCKET_ENDPOINT = 'localhost:3000';
 
@@ -21,14 +22,14 @@ export class SocketService {
   }
 
   private emitEvent<T>(eventName: string, data?: T): void {
-    console.log('emitting message', data);
+    console.log(data);
     this.socket.emit(eventName, data);
   }
   onMessageReceive(): Observable<string> {
     return this.subsribeToEvent<string>('message-broadcast');
   }
 
-  emitMessage(data: string): void {
-    this.emitEvent<string>('message', data);
+  emitMessage(data: Message): void {
+    this.emitEvent<Message>('message', data);
   }
 }

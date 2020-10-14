@@ -1,16 +1,20 @@
 <div class="chat-messages">
   <div class="chat-messages-show-container">
     <ul class="chat-messages-show-list" id="message-list"></ul>
+    <li *ngFor="let message of messages">
+      {{ message.timestamp }}
+      {{ message.sender }}
+      {{ message.content }}
+    </li>
   </div>
   <form id="chat-form" (ngSubmit)="SendMessage()">
     <div class="chat-messages-create-container">
       <input
         class="chat-messages-create-input"
         type="text"
-        [(ngModel)]="message"
-        name="message"
+        [formControl]="messageInput"
       />
-      <button class="chat-messages-create-button" type="submmit">Send</button>
+      <button class="chat-messages-create-button" type="submit">Send</button>
     </div>
   </form>
 </div>
