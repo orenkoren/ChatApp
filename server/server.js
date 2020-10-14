@@ -1,17 +1,24 @@
-var app = require('express')();
-var http = require('http').createServer(app);
-var io = require('socket.io')(http);
+var app = require("express")();
+var http = require("http").createServer(app);
+var io = require("socket.io")(http);
 
-app.get('/', (req, res) => res.send('hello!'));
+app.get("/", (req, res) => res.send("hello!"));
 
-io.on('connection', (socket) => {
-    console.log('a user connected');
-    socket.on('message', (msg) => {
-        console.log(msg);
-        socket.broadcast.emit('message-broadcast', msg);
-    });
+io.on("connection", (socket) => {
+  console.log("a user connected");
+  socket.on("message", (msg) => {
+    console.log(msg);
+    socket.broadcast.emit("message-broadcast", msg);
+  });
+  socket.on("user-typing", (user) => {
+    socket.broadcast.emit("typing-broadcast", user);
+  });
+  socket.on("user-stopped-typing", (user) => {
+    console.log("stopped typing");
+    socket.broadcast.emit("typing-stopped-broadcast", user);
+  });
 });
 
 http.listen(3000, () => {
-    console.log('listening on *:3000');
+  console.log("listening on *:3000");
 });

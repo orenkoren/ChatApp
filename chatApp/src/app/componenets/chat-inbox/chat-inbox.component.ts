@@ -1,4 +1,4 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { THIS_EXPR, ThrowStmt } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Message } from 'src/app/models/message';
@@ -15,16 +15,26 @@ export class ChatInboxComponent {
   socket: any;
   messageInput = new FormControl();
   messages: Message[] = [];
+  userTypingList = new Set<string>();
+  canSendTyping = true;
+  typingTimer: NodeJS.Timeout;
   constructor(
     private socketServie: SocketService,
     private authService: AuthService
   ) {
     socketServie
       .onMessageReceive()
-      .subscribe((message) => this.OnReceiveMessage(message));
+      .subscribe((message) => this.onReceiveMessage(message));
+    socketServie.onUserTyping().subscribe((user) => {
+      console.log('subscriber' + user);
+      this.onUserTyping(user);
+    });
+    socketServie.onUserStoppedTyping().subscribe((user) => {
+      this.onUserStopTyping(user);
+    });
   }
 
-  SendMessage(): void {
+  sendMessage(): void {
     const message = new Message(
       this.messageInput.value,
       this.authService.getUsername()
@@ -32,9 +42,45 @@ export class ChatInboxComponent {
     console.log(message);
     this.socketServie.emitMessage(message);
     this.messages.push(message);
+    this.messageInput.reset();
   }
 
-  OnReceiveMessage(message): void {
+  notifyTyping(): void {
+    if (!this.canSendTyping) {
+      return;
+    }
+
+    this.socketServie.emitUserTyping(this.authService.getUsername());
+    this.canSendTyping = false;
+    setTimeout(() => {
+      this.canSendTyping = true;
+    }, 2000);
+
+    this.typingTimer = setTimeout(() => {
+      console.log('in timeout');
+      this.socketServie.emitUserStopTyping(this.authService.getUsername());
+    }, 1000);
+  }
+
+  onReceiveMessage(message): void {
     this.messages.push(message);
+  }
+
+  onUserTyping(user: string): void {
+    this.userTypingList.add(user);
+  }
+
+  onUserStopTyping(user: string): void {
+    console.log('deleting' + user);
+    this.userTypingList.delete(user);
+  }
+
+  get usersTyping(): string {
+    let prettyUserString = '';
+    this.userTypingList.forEach((element) => {
+      prettyUserString += element;
+    });
+    prettyUserString += ' is typing...';
+    return prettyUserString;
   }
 }

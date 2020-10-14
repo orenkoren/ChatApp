@@ -7,12 +7,18 @@
       {{ message.content }}
     </li>
   </div>
-  <form id="chat-form" (ngSubmit)="SendMessage()">
+  <div>
+    <span *ngIf="userTypingList.size > 0">
+      {{ usersTyping }}
+    </span>
+  </div>
+  <form id="chat-form" (ngSubmit)="sendMessage()">
     <div class="chat-messages-create-container">
       <input
         class="chat-messages-create-input"
         type="text"
         [formControl]="messageInput"
+        (input)="notifyTyping()"
       />
       <button class="chat-messages-create-button" type="submit">Send</button>
     </div>

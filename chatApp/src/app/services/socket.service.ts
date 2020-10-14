@@ -29,7 +29,23 @@ export class SocketService {
     return this.subsribeToEvent<string>('message-broadcast');
   }
 
+  onUserTyping(): Observable<string> {
+    return this.subsribeToEvent<string>('typing-broadcast');
+  }
+
+  onUserStoppedTyping(): Observable<string> {
+    return this.subsribeToEvent<string>('typing-stopped-broadcast');
+  }
+
   emitMessage(data: Message): void {
     this.emitEvent<Message>('message', data);
+  }
+
+  emitUserTyping(data: string): void {
+    this.emitEvent<string>('user-typing', data);
+  }
+
+  emitUserStopTyping(data: string): void {
+    this.emitEvent<string>('user-stopped-typing', data);
   }
 }
