@@ -1,11 +1,14 @@
 <div class="chat-messages">
   <div class="chat-messages-show-container">
-    <ul class="chat-messages-show-list" id="message-list"></ul>
-    <li *ngFor="let message of messages">
-      {{ message.timestamp }}
-      {{ message.sender }}
-      {{ message.content }}
-    </li>
+    <div
+      *ngFor="let message of messages"
+      class="message-box my-message-box"
+      [class.my-message-box]="isOwnMessage(message)"
+    >
+      <div class="message-sender">{{ message.sender }}</div>
+      <div class="message-content">{{ message.content }}</div>
+      <div class="message-timestamp">{{ message.timestamp }}</div>
+    </div>
   </div>
   <div>
     <span *ngIf="userTypingList.size > 0">

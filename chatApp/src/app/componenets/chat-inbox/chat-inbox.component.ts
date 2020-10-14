@@ -62,6 +62,10 @@ export class ChatInboxComponent {
     }, 1000);
   }
 
+  isOwnMessage(message: Message): boolean {
+    return message.Sender === this.authService.getUsername();
+  }
+
   onReceiveMessage(message): void {
     this.messages.push(message);
   }
