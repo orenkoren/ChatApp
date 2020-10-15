@@ -30,9 +30,11 @@
 
 .message-box {
   background: #000000;
+  position: relative;
   padding: 2vh;
   width: fit-content;
   border-radius: 1vh;
+  margin-left: 2vh;
 }
 .message-content {
   padding: 1vh 0;
@@ -47,4 +49,28 @@
 
 .my-message-box {
   align-self: flex-end;
+  margin-right: 2vh;
+}
+
+.message-box:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-bottom-color: #000000;
+  border-top: 0;
+}
+
+.message-box:not(.my-message-box):after {
+  left: 0;
+  border-right: 0;
+  margin-left: -2vh;
+}
+
+.message-box.my-message-box:after {
+  right: 0;
+  border-left: 0;
+  margin-right: -2vh;
 }
