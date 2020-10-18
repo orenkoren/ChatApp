@@ -17,6 +17,10 @@ io.on("connection", (socket) => {
     console.log("stopped typing");
     socket.broadcast.emit("typing-stopped-broadcast", user);
   });
+  socket.on("message-read", () => {
+    console.log("message-read");
+    socket.broadcast.emit("message-read-broadcast");
+  });
 });
 
 http.listen(3000, () => {

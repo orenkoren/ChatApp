@@ -1,11 +1,9 @@
-import { THIS_EXPR, ThrowStmt } from '@angular/compiler/src/output/output_ast';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Message } from 'src/app/models/message';
 import { AuthService } from 'src/app/services/auth.service';
 import { SocketService } from 'src/app/services/socket.service';
 
-const SOCKET_ENDPOINT = 'localhost:3000';
 @Component({
   selector: 'app-chat-inbox',
   templateUrl: './chat-inbox.component.html',
@@ -17,7 +15,7 @@ export class ChatInboxComponent {
   messages: Message[] = [];
   userTypingList = new Set<string>();
   canSendTyping = true;
-  typingTimer: NodeJS.Timeout;
+  typingTimer: ReturnType<typeof setTimeout>;
   constructor(
     private socketServie: SocketService,
     private authService: AuthService
@@ -32,6 +30,7 @@ export class ChatInboxComponent {
     socketServie.onUserStoppedTyping().subscribe((user) => {
       this.onUserStopTyping(user);
     });
+    socketServie.onMessageRead().subscribe(() => this.onMessageRead());
   }
 
   sendMessage(): void {
@@ -66,8 +65,20 @@ export class ChatInboxComponent {
     return message.Sender === this.authService.getUsername();
   }
 
+  onMessageRead(): void {
+    console.log('confirmed message read');
+    this.messages.forEach((message) => {
+      message.Read = true;
+    });
+  }
+
+  isMessageRead(message: Message): boolean {
+    return message.Read;
+  }
+
   onReceiveMessage(message): void {
     this.messages.push(message);
+    this.socketServie.emitMessageRead();
   }
 
   onUserTyping(user: string): void {

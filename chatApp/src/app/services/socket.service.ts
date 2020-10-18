@@ -32,6 +32,9 @@ export class SocketService {
   onUserTyping(): Observable<string> {
     return this.subsribeToEvent<string>('typing-broadcast');
   }
+  onMessageRead(): Observable<string> {
+    return this.subsribeToEvent<string>('message-read-broadcast');
+  }
 
   onUserStoppedTyping(): Observable<string> {
     return this.subsribeToEvent<string>('typing-stopped-broadcast');
@@ -39,6 +42,10 @@ export class SocketService {
 
   emitMessage(data: Message): void {
     this.emitEvent<Message>('message', data);
+  }
+
+  emitMessageRead(): void {
+    this.emitEvent('message-read');
   }
 
   emitUserTyping(data: string): void {

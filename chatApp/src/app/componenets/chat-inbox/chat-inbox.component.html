@@ -7,7 +7,18 @@
     >
       <div class="message-sender">{{ message.sender }}</div>
       <div class="message-content">{{ message.content }}</div>
-      <div class="message-timestamp">{{ message.timestamp }}</div>
+      <div>
+        <span class="message-timestamp">
+          {{ message.timestamp }}
+        </span>
+        <span
+          class="message-read"
+          *ngIf="isOwnMessage(message)"
+          [class.message-read]="isMessageRead(message)"
+        >
+          &#10003;
+        </span>
+      </div>
     </div>
   </div>
   <div>

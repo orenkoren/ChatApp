@@ -35,6 +35,8 @@
   width: fit-content;
   border-radius: 1vh;
   margin-left: 2vh;
+  margin-bottom: 2vh;
+  animation: fadein 700ms ease-in-out;
 }
 .message-content {
   padding: 1vh 0;
@@ -45,6 +47,11 @@
 }
 .message-timestamp {
   font-size: 0.7rem;
+}
+
+.message-read {
+  transition: color 3s ease-in-out;
+  color: #00fcfc;
 }
 
 .my-message-box {
@@ -73,4 +80,13 @@
   right: 0;
   border-left: 0;
   margin-right: -2vh;
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
