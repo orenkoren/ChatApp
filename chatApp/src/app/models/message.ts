@@ -6,6 +6,10 @@ export class Message {
   private read: boolean;
   private sender: string;
 
+  static fromObject(obj: object): Message {
+    return Object.setPrototypeOf(obj, this.prototype);
+  }
+
   constructor(content: string, sender: string, read: boolean = false) {
     this.content = content;
     this.sender = sender;

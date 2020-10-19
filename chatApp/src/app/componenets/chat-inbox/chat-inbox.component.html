@@ -1,5 +1,5 @@
 <div class="chat-messages">
-  <div class="chat-messages-show-container">
+  <div class="chat-messages-show-container" #scrollMe>
     <div
       *ngFor="let message of messages"
       class="message-box my-message-box"
@@ -12,7 +12,7 @@
           {{ message.timestamp }}
         </span>
         <span
-          class="message-read"
+          class="message-read message-check"
           *ngIf="isOwnMessage(message)"
           [class.message-read]="isMessageRead(message)"
         >
@@ -26,15 +26,29 @@
       {{ usersTyping }}
     </span>
   </div>
-  <form id="chat-form" (ngSubmit)="sendMessage()">
-    <div class="chat-messages-create-container">
-      <input
-        class="chat-messages-create-input"
-        type="text"
-        [formControl]="messageInput"
-        (input)="notifyTyping()"
-      />
-      <button class="chat-messages-create-button" type="submit">Send</button>
+  <div class="lower-screen">
+    <form class="chat-form" id="chat-form" (ngSubmit)="sendMessage()">
+      <div class="chat-messages-create-container">
+        <textarea
+          class="chat-messages-create-input"
+          type="text"
+          [formControl]="messageInput"
+          (input)="notifyTyping()"
+          (keydown.enter)="sendMessage(); (false)"
+        >
+        </textarea>
+
+        <button
+          class="chat-messages-create-button"
+          [disabled]="messageInput.invalid"
+          type="submit"
+        >
+          Send
+        </button>
+      </div>
+    </form>
+    <div class="error-box" *ngIf="messageInput.errors?.required">
+      Message cannot be empty.
     </div>
-  </form>
+  </div>
 </div>

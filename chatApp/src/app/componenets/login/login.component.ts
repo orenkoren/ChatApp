@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
 
@@ -8,14 +9,22 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-  username: string;
+  username = new FormControl('', [
+    Validators.required,
+    Validators.minLength(4),
+    Validators.pattern(new RegExp(`\\S`)),
+  ]);
 
   constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {}
 
   submit(): void {
-    this.authService.login(this.username);
+    const usernameTrimmed = this.username.value;
+    console.log(this.username.invalid);
+    console.log(this.username.errors);
+    usernameTrimmed.replace('/s+$/', '');
+    this.authService.login(usernameTrimmed);
     if (this.authService.isUserLoggedIn()) {
       this.router.navigate(['/chat']);
     } else {

@@ -19,13 +19,22 @@
         <input
           type="text"
           class="form-control"
-          id="text"
-          name="username"
+          id="username"
+          [formControl]="username"
           placeholder="Username"
-          [(ngModel)]="username"
         />
+        <div *ngIf="username.errors?.required">Name is required.</div>
+        <div *ngIf="username.errors?.minlength">
+          Name must be at least 4 characters long.
+        </div>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="username.invalid"
+      >
+        Submit
+      </button>
     </form>
   </div>
 </div>

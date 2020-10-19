@@ -1,5 +1,12 @@
-import { Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import {
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  ViewChild,
+} from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
 import { Message } from 'src/app/models/message';
 import { AuthService } from 'src/app/services/auth.service';
 import { SocketService } from 'src/app/services/socket.service';
@@ -9,17 +16,25 @@ import { SocketService } from 'src/app/services/socket.service';
   templateUrl: './chat-inbox.component.html',
   styleUrls: ['./chat-inbox.component.css'],
 })
-export class ChatInboxComponent {
+export class ChatInboxComponent implements AfterViewInit {
+  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
   socket: any;
-  messageInput = new FormControl();
+  messageInput = new FormControl('', [Validators.required]);
   messages: Message[] = [];
   userTypingList = new Set<string>();
   canSendTyping = true;
   typingTimer: ReturnType<typeof setTimeout>;
+
+  @HostListener('window:beforeunload')
+  updateMessages(): void {
+    sessionStorage.setItem('messages', JSON.stringify(this.messages));
+  }
+
   constructor(
     private socketServie: SocketService,
     private authService: AuthService
   ) {
+    this.InitializeMessages();
     socketServie
       .onMessageReceive()
       .subscribe((message) => this.onReceiveMessage(message));
@@ -33,6 +48,19 @@ export class ChatInboxComponent {
     socketServie.onMessageRead().subscribe(() => this.onMessageRead());
   }
 
+  private InitializeMessages(): void {
+    if (JSON.parse(sessionStorage.getItem('messages'))) {
+      const jsonArray = JSON.parse(sessionStorage.getItem('messages'));
+      jsonArray.forEach((element) => {
+        this.messages.push(Message.fromObject(element));
+      });
+    }
+  }
+
+  ngAfterViewInit(): void {
+    this.scrollToBottom();
+  }
+
   sendMessage(): void {
     const message = new Message(
       this.messageInput.value,
@@ -42,6 +70,7 @@ export class ChatInboxComponent {
     this.socketServie.emitMessage(message);
     this.messages.push(message);
     this.messageInput.reset();
+    setTimeout(() => this.scrollToBottom(), 100);
   }
 
   notifyTyping(): void {
@@ -62,6 +91,7 @@ export class ChatInboxComponent {
   }
 
   isOwnMessage(message: Message): boolean {
+    console.log(message);
     return message.Sender === this.authService.getUsername();
   }
 
@@ -97,5 +127,11 @@ export class ChatInboxComponent {
     });
     prettyUserString += ' is typing...';
     return prettyUserString;
+  }
+
+  scrollToBottom(): void {
+    try {
+      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch (err) {}
   }
 }

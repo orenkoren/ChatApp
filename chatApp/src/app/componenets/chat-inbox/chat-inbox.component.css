@@ -1,24 +1,41 @@
 .chat-messages-show-container {
   background: #c3c3c3;
-  height: 400px;
+  height: 85vh;
   display: flex;
   flex-direction: column;
-  overflow: auto;
+  overflow-y: scroll;
+  overflow-x: hidden;
   padding: 1vh;
+  box-sizing: border-box;
 }
 .chat-messages-show-list {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
+.lower-screen {
+  height: 10vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-form {
+  display: flex;
+  flex-direction: column;
+  flex: 9 1;
+}
+
 .chat-messages-create-container {
   background: #616161;
-  height: 100px;
   display: flex;
+  flex: 1 1;
   justify-content: center;
 }
 .chat-messages-create-input {
+  overflow-wrap: break-word;
+  resize: none;
   padding: 12px;
+  box-sizing: border-box;
   margin: 29px 30px;
   flex: 2;
 }
@@ -26,6 +43,11 @@
   height: 50px;
   margin: auto 40px;
   width: 100px;
+}
+
+.error-box {
+  display: flex;
+  flex: 1;
 }
 
 .message-box {
@@ -40,6 +62,7 @@
 }
 .message-content {
   padding: 1vh 0;
+  overflow-wrap: break-word;
 }
 
 .message-sender {
@@ -53,6 +76,10 @@
   transition: color 3s ease-in-out;
   color: #00fcfc;
 }
+.message-check {
+  padding-left: 1vh;
+  float: right;
+}
 
 .my-message-box {
   align-self: flex-end;
@@ -65,7 +92,7 @@
   bottom: 0;
   width: 0;
   height: 0;
-  border: 20px solid transparent;
+  border: 2.7vh solid transparent;
   border-bottom-color: #000000;
   border-top: 0;
 }
